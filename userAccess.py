@@ -4,19 +4,24 @@ db = {}
 
 
 def main_sector():
-    loading_all_data()
     while True:
-        main_option = int(input("Press 1 to Register:\nPress 2 to Login\nPress 3 to Exit:"))
-        if main_option == 1:
-            registration()
-        elif main_option == 2:
-            login()
-        elif main_option == 3:
-            # recording_all_data()
-            exit(1)
-        else:
-            print("Invalid Option")
-            main_sector()
+        try:
+            main_option = int(input("Press 1 to Register:\nPress 2 to Login\nPress 3 to Exit:"))
+            if main_option == 1:
+                registration()
+            elif main_option == 2:
+                login()
+            elif main_option == 3:
+                recording_all_data()
+                exit(1)
+            else:
+                print("Invalid Option")
+                main_sector()
+                continue
+        except ValueError:
+            print("Please enter only integers.")
+            continue
+
 
 
 def registration():
@@ -56,11 +61,23 @@ def login():
 
 
 def user_profile(user_found):
-    print("Welcome:", db[user_found]["u_name"])
+    print("Welcome:",db[user_found]["u_name"])
 
-    option = int(input("Press 1 to exit"))
-    if option == 1:
-        recording_all_data()
+    while True:
+        try:
+            option = int(input("Press 1 to exit:\nPress 2 to update your infos:"))
+            if option == 1:
+                recording_all_data()
+                exit(1)
+            elif option == 2:
+                update_user_infos(user_found)
+            else:
+                print("Invalid Option")
+                user_profile(user_found)
+                continue
+        except ValueError:
+            print("Please enter only integers.")
+            continue
 
 
 def email_exists(email, db):
@@ -69,6 +86,19 @@ def email_exists(email, db):
             return True
     return False
 
+# def update_user_infos():
+#     pass
+
+def update_user_infos(user_id):
+    print("Enter new information (leave blank if no change):")
+    new_email = input("Email: ") or db[user_id]["email"]
+    new_name = input("Name: ") or db[user_id]["u_name"]
+    new_password = input("Password: ") or db[user_id]["password"]
+    new_phone = input("Phone: ") or db[user_id]["phone"]
+    new_age = input("Age: ") or db[user_id]["age"]
+    
+    db[user_id] = {"email": new_email, "u_name": new_name, "password": new_password, "phone": new_phone, "age": new_age}
+    print("User information updated.")
 
 def recording_all_data():
     with open("record.txt", 'w') as file:
